@@ -78,45 +78,33 @@ img {
 
 <!-- CONTENIDO -->
 <div class="card" id="content" style="display:none;">
-  <div class="heart" id="emoji">💗</div>
+  <div class="heart" id="emoji">🎄</div>
   <h3 id="date"></h3>
   <p id="message"></p>
   <img id="photo">
 </div>
 
 <script>
-// 🔐 CAMBIA LA CONTRASEÑA
+// 🔐 CONTRASEÑA
 const PASSWORD = "paraminegrita";
 
-// 📸 ÁLBUM GENERAL
+// 📸 ÁLBUM GENERAL (jpeg)
 const allPhotos = [
-  "images/foto1.jpg",
-  "images/foto2.jpg",
-  "images/foto3.jpg"
+  "images/foto1.jpeg",
+  "images/foto2.jpeg"
 ];
 
-// 📅 MENSAJE + DISEÑO POR DÍA
+// 📅 MENSAJE POR DÍA
 const days = {
-  "2025-02-14": {
-    bg: "#fdeff2",
+  "2025-12-25": {
+    bg: "linear-gradient(135deg,#ffecd2,#fcb69f)",
     card: "#ffffff",
-    message: "Hoy quiero recordarte lo increíble que eres 💖",
-    emoji: "💗",
-    photos: ["images/foto1.jpg", "images/foto2.jpg"]
-  },
-  "2025-02-15": {
-    bg: "#f3e5f5",
-    card: "#ffffff",
-    message: "Aunque estemos lejos, mi corazón siempre llega a ti 🌸",
-    emoji: "🌸",
-    photos: ["images/foto3.jpg"]
-  },
-  "2025-02-16": {
-    bg: "linear-gradient(135deg,#0f2027,#203a43,#2c5364)",
-    card: "#1c1c1c",
-    message: "Mira el cielo esta noche, ahí también pienso en ti 🌙",
-    emoji: "✨",
-    photos: ["images/foto1.jpg"]
+    message: "Encontrarte, mi Yulicita, es mi mayor regalo.",
+    emoji: "🎄💖",
+    photos: [
+      "images/foto1.jpeg",
+      "images/foto2.jpeg"
+    ]
   }
 };
 
@@ -138,7 +126,6 @@ function check() {
   const today = new Date().toISOString().slice(0,10);
   const data = days[today];
 
-  // 📅 FECHA BONITA
   document.getElementById("date").innerText =
     new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
 
@@ -147,9 +134,7 @@ function check() {
     document.querySelector("#content").style.background = data.card;
     document.getElementById("message").innerText = data.message;
     document.getElementById("emoji").innerText = data.emoji;
-
-    const photos = data.photos || allPhotos;
-    document.getElementById("photo").src = randomFrom(photos);
+    document.getElementById("photo").src = randomFrom(data.photos);
   } else {
     document.body.style.background = "#fff3e0";
     document.getElementById("message").innerText =
@@ -161,4 +146,3 @@ function check() {
 
 </body>
 </html>
-
