@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Ti 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #fdeff2;
+      font-family: 'Dancing Script', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    input, button {
+      padding: 10px;
+      width: 80%;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
+    button {
+      background: #f48fb1;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .heart {
+      font-size: 30px;
+      animation: beat 1s infinite;
+    }
+    @keyframes beat {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="login">
+  <h2>💖 Para ti</h2>
+  <p>Ingresa la contraseña</p>
+  <input type="password" id="pass">
+  <button onclick="check()">Entrar</button>
+</div>
+
+<div class="card" id="content" style="display:none;">
+  <div class="heart">💗</div>
+  <h3 id="date"></h3>
+  <p id="message"></p>
+</div>
+
+<script>
+const PASSWORD = "amor123"; // cambia esto
+
+const days = {
+  "2025-02-14": {
+    bg: "#fdeff2",
+    card: "#ffffff",
+    message: "Hoy quiero recordarte lo increíble que eres 💖",
+    emoji: "💗"
+  },
+  "2025-02-15": {
+    bg: "#f3e5f5",
+    card: "#ffffff",
+    message: "Aunque estemos lejos, mi corazón siempre llega a ti 🌸",
+    emoji: "🌸"
+  },
+  "2025-02-16": {
+    bg: "linear-gradient(#0f2027, #203a43, #2c5364)",
+    card: "#1c1c1c",
+    message: "Mira el cielo esta noche, ahí también pienso en ti 🌙",
+    emoji: "✨"
+  }
+};
+
+function check() {
+  if (document.getElementById("pass").value === PASSWORD) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("content").style.display = "block";
+
+    const today = new Date().toISOString().slice(0,10);
+    const data = days[today];
+
+    if (data) {
+      document.body.style.background = data.bg;
+      document.querySelector(".card").style.background = data.card;
+      document.getElementById("message").innerText = data.message;
+      document.querySelector(".heart").innerText = data.emoji;
+    } else {
+      document.getElementById("message").innerText =
+        "Hoy no hay mensaje nuevo… pero mi amor no descansa 💕";
+    }
+
+    document.getElementById("date").innerText =
+      new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
+  } else {
+    alert("Contraseña incorrecta");
+  }
+}
+</script>
+
+
+</body>
+</html>
