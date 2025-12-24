@@ -1,54 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Para Ti 💖</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: #fdeff2;
-      font-family: 'Dancing Script', cursive;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-    input, button {
-      padding: 10px;
-      width: 80%;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-family: inherit;
-    }
-    button {
-      background: #f48fb1;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .heart {
-      font-size: 30px;
-      animation: beat 1s infinite;
-    }
-    @keyframes beat {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Para Ti 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Dancing Script', cursive;
+  transition: background 1s ease;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+input, button {
+  width: 80%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
+
+button {
+  background: #f48fb1;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.heart {
+  font-size: 32px;
+  animation: beat 1s infinite;
+}
+
+@keyframes beat {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+img {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+}
+</style>
 </head>
+
 <body>
 
+<!-- LOGIN -->
 <div class="card" id="login">
   <h2>💖 Para ti</h2>
   <p>Ingresa la contraseña</p>
@@ -56,62 +76,77 @@
   <button onclick="check()">Entrar</button>
 </div>
 
+<!-- CONTENIDO -->
 <div class="card" id="content" style="display:none;">
-  <div class="heart">💗</div>
+  <div class="heart" id="emoji">💗</div>
   <h3 id="date"></h3>
   <p id="message"></p>
+  <img id="photo">
 </div>
 
 <script>
-const PASSWORD = "amor123"; // cambia esto
+// 🔐 CAMBIA LA CONTRASEÑA
+const PASSWORD = "amor123";
 
+// 📸 ÁLBUM GENERAL
+const allPhotos = [
+  "images/foto1.jpg",
+  "images/foto2.jpg",
+  "images/foto3.jpg"
+];
+
+// 📅 MENSAJE + DISEÑO POR DÍA
 const days = {
   "2025-02-14": {
     bg: "#fdeff2",
     card: "#ffffff",
     message: "Hoy quiero recordarte lo increíble que eres 💖",
-    emoji: "💗"
+    emoji: "💗",
+    photos: ["images/foto1.jpg", "images/foto2.jpg"]
   },
   "2025-02-15": {
     bg: "#f3e5f5",
     card: "#ffffff",
     message: "Aunque estemos lejos, mi corazón siempre llega a ti 🌸",
-    emoji: "🌸"
+    emoji: "🌸",
+    photos: ["images/foto3.jpg"]
   },
   "2025-02-16": {
-    bg: "linear-gradient(#0f2027, #203a43, #2c5364)",
+    bg: "linear-gradient(135deg,#0f2027,#203a43,#2c5364)",
     card: "#1c1c1c",
     message: "Mira el cielo esta noche, ahí también pienso en ti 🌙",
-    emoji: "✨"
+    emoji: "✨",
+    photos: ["images/foto1.jpg"]
   }
 };
 
-function check() {
-  if (document.getElementById("pass").value === PASSWORD) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("content").style.display = "block";
-
-    const today = new Date().toISOString().slice(0,10);
-    const data = days[today];
-
-    if (data) {
-      document.body.style.background = data.bg;
-      document.querySelector(".card").style.background = data.card;
-      document.getElementById("message").innerText = data.message;
-      document.querySelector(".heart").innerText = data.emoji;
-    } else {
-      document.getElementById("message").innerText =
-        "Hoy no hay mensaje nuevo… pero mi amor no descansa 💕";
-    }
-
-    document.getElementById("date").innerText =
-      new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
-  } else {
-    alert("Contraseña incorrecta");
-  }
+// 🎲 FOTO ALEATORIA
+function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
-</script>
 
+// 🔓 LOGIN
+function check() {
+  if (document.getElementById("pass").value !== PASSWORD) {
+    alert("Contraseña incorrecta");
+    return;
+  }
 
-</body>
-</html>
+  document.getElementById("login").style.display = "none";
+  document.getElementById("content").style.display = "block";
+
+  const today = new Date().toISOString().slice(0,10);
+  const data = days[today];
+
+  // 📅 FECHA BONITA
+  document.getElementById("date").innerText =
+    new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
+
+  if (data) {
+    document.body.style.background = data.bg;
+    document.querySelector("#content").style.background = data.card;
+    document.getElementById("message").innerText = data.message;
+    document.getElementById("emoji").innerText = data.emoji;
+
+    const photos = data.photos || allPhotos;
+    document.getElementById("photo
