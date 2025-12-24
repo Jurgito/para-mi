@@ -86,7 +86,7 @@ img {
 
 <script>
 // 🔐 CAMBIA LA CONTRASEÑA
-const PASSWORD = "michikistrikis";
+const PASSWORD = "amor123";
 
 // 📸 ÁLBUM GENERAL
 const allPhotos = [
@@ -149,5 +149,15 @@ function check() {
     document.getElementById("emoji").innerText = data.emoji;
 
     const photos = data.photos || allPhotos;
-    document.getElementById("photo
+    document.getElementById("photo").src = randomFrom(photos);
+  } else {
+    document.body.style.background = "#fff3e0";
+    document.getElementById("message").innerText =
+      "Hoy no hay mensaje nuevo… pero mi amor sigue aquí 🤍";
+    document.getElementById("photo").src = randomFrom(allPhotos);
+  }
+}
+</script>
 
+</body>
+</html>
