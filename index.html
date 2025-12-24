@@ -14,7 +14,14 @@ body {
   justify-content: center;
   align-items: center;
   font-family: 'Dancing Script', cursive;
-  transition: background 1s ease;
+  background-size: 400% 400%;
+  animation: bgMove 12s ease infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .card {
@@ -24,7 +31,13 @@ body {
   width: 90%;
   max-width: 400px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  animation: appear 1.5s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 input, button {
@@ -43,18 +56,14 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
 .heart {
   font-size: 32px;
-  animation: beat 1s infinite;
+  animation: beat 1.2s infinite;
 }
 
 @keyframes beat {
   0%,100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+  50% { transform: scale(1.25); }
 }
 
 img {
@@ -62,6 +71,12 @@ img {
   margin-top: 15px;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  animation: fade 1.5s ease;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 </style>
 </head>
@@ -85,22 +100,22 @@ img {
 </div>
 
 <script>
-// 🔐 CONTRASEÑA
 const PASSWORD = "paraminegrita";
 
-// 📸 ÁLBUM GENERAL (jpeg)
-const allPhotos = [
-  "images/foto1.jpeg",
-  "images/foto2.jpeg"
-];
-
-// 📅 MENSAJE POR DÍA
 const days = {
+  "2025-12-24": {
+    bg: "linear-gradient(135deg,#ffe29f,#ffa99f)",
+    message: "En esta víspera, Tú eres todo lo que pienso y necesito",
+    emoji: "🎄✨",
+    photos: [
+      "images/foto1.jpeg",
+      "images/foto2.jpeg"
+    ]
+  },
   "2025-12-25": {
     bg: "linear-gradient(135deg,#ffecd2,#fcb69f)",
-    card: "#ffffff",
     message: "Encontrarte, mi Yulicita, es mi mayor regalo.",
-    emoji: "🎄💖",
+    emoji: "🎁💖",
     photos: [
       "images/foto1.jpeg",
       "images/foto2.jpeg"
@@ -108,12 +123,9 @@ const days = {
   }
 };
 
-// 🎲 FOTO ALEATORIA
-function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+let photoIndex = 0;
+let slideshowInterval;
 
-// 🔓 LOGIN
 function check() {
   if (document.getElementById("pass").value !== PASSWORD) {
     alert("Contraseña incorrecta");
@@ -129,18 +141,23 @@ function check() {
   document.getElementById("date").innerText =
     new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
 
-  if (data) {
-    document.body.style.background = data.bg;
-    document.querySelector("#content").style.background = data.card;
-    document.getElementById("message").innerText = data.message;
-    document.getElementById("emoji").innerText = data.emoji;
-    document.getElementById("photo").src = randomFrom(data.photos);
-  } else {
-    document.body.style.background = "#fff3e0";
-    document.getElementById("message").innerText =
-      "Hoy no hay mensaje nuevo… pero mi amor sigue aquí 🤍";
-    document.getElementById("photo").src = randomFrom(allPhotos);
-  }
+  if (!data) return;
+
+  document.body.style.background = data.bg;
+  document.getElementById("message").innerText = data.message;
+  document.getElementById("emoji").innerText = data.emoji;
+
+  const img = document.getElementById("photo");
+  img.src = data.photos[0];
+
+  slideshowInterval = setInterval(() => {
+    photoIndex = (photoIndex + 1) % data.photos.length;
+    img.style.opacity = 0;
+    setTimeout(() => {
+      img.src = data.photos[photoIndex];
+      img.style.opacity = 1;
+    }, 500);
+  }, 4000);
 }
 </script>
 
