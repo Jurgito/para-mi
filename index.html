@@ -72,7 +72,7 @@ body {
   transition: opacity 1.8s ease;
 }
 
-/* 💕 Corazones laterales */
+/* 💕 Corazones */
 .floating {
   position: absolute;
   animation: floatUp 12s linear infinite;
@@ -104,7 +104,7 @@ button {
 
 <body>
 
-<!-- 💖 Corazones decorativos -->
+<!-- 💖 Corazones laterales -->
 <script>
 for (let i = 0; i < 16; i++) {
   const h = document.createElement("div");
@@ -139,16 +139,31 @@ for (let i = 0; i < 16; i++) {
 <script>
 const PASSWORD = "paraminegrita";
 
-/* 📸 Fotos foto1 → foto10 (jpg / jpeg) */
-const photos = [];
-for (let i = 1; i <= 10; i++) {
-  photos.push(`images/foto${i}.jpg`);
-  photos.push(`images/foto${i}.jpeg`);
-}
-
+let photos = [];
 let index = 0;
 
-/* 💌 Cargar frase desde frases.txt */
+/* 🔍 Verificar imágenes existentes (jpg / jpeg) */
+function imageExists(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+/* 📸 Cargar solo imágenes reales */
+async function loadPhotos() {
+  for (let i = 1; i <= 10; i++) {
+    const jpg = `images/foto${i}.jpg`;
+    const jpeg = `images/foto${i}.jpeg`;
+
+    if (await imageExists(jpg)) photos.push(jpg);
+    else if (await imageExists(jpeg)) photos.push(jpeg);
+  }
+}
+
+/* 💌 Leer frase desde frases.txt */
 async function loadPhrase() {
   try {
     const res = await fetch("frases.txt");
@@ -183,12 +198,13 @@ async function check() {
     { dateStyle: "full" }
   );
 
-  // 💌 Frase aleatoria
   message.innerText = await loadPhrase();
 
-  // 📸 Primera foto
-  photo.src = photos[index];
+  await loadPhotos();
 
+  if (photos.length === 0) return;
+
+  photo.src = photos[index];
   setInterval(changePhoto, 5000);
 }
 
@@ -205,3 +221,4 @@ function changePhoto() {
 
 </body>
 </html>
+
