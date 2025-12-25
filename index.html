@@ -14,8 +14,9 @@ body {
   justify-content: center;
   align-items: center;
   font-family: 'Dancing Script', cursive;
+  overflow: hidden;
   background-size: 400% 400%;
-  animation: bgMove 12s ease infinite;
+  animation: bgMove 14s ease infinite;
 }
 
 @keyframes bgMove {
@@ -27,17 +28,51 @@ body {
 .card {
   background: white;
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 22px;
   width: 90%;
   max-width: 400px;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
   animation: appear 1.5s ease;
+  z-index: 2;
 }
 
 @keyframes appear {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.heart {
+  font-size: 34px;
+  animation: beat 1.3s infinite;
+}
+
+@keyframes beat {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+.photo-box {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  margin-top: 15px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.photo-box img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.photo-box img.active {
+  opacity: 1;
 }
 
 input, button {
@@ -56,32 +91,35 @@ button {
   cursor: pointer;
 }
 
-.heart {
-  font-size: 32px;
-  animation: beat 1.2s infinite;
+/* 💕 Corazones laterales */
+.floating {
+  position: absolute;
+  font-size: 22px;
+  animation: floatUp 10s linear infinite;
+  opacity: 0.6;
 }
 
-@keyframes beat {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
-}
-
-img {
-  width: 100%;
-  margin-top: 15px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-  animation: fade 1.5s ease;
-}
-
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes floatUp {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-10vh); }
 }
 </style>
 </head>
 
 <body>
+
+<!-- Corazones -->
+<script>
+for (let i = 0; i < 14; i++) {
+  const h = document.createElement("div");
+  h.className = "floating";
+  h.innerText = "💖";
+  h.style.left = Math.random() < 0.5 ? "5%" : "95%";
+  h.style.animationDelay = Math.random() * 10 + "s";
+  h.style.fontSize = 18 + Math.random() * 14 + "px";
+  document.body.appendChild(h);
+}
+</script>
 
 <!-- LOGIN -->
 <div class="card" id="login">
@@ -96,68 +134,72 @@ img {
   <div class="heart" id="emoji">🎄</div>
   <h3 id="date"></h3>
   <p id="message"></p>
-  <img id="photo">
+
+  <div class="photo-box">
+    <img id="img1" class="active">
+    <img id="img2">
+  </div>
 </div>
 
 <script>
 const PASSWORD = "paraminegrita";
 
+/* 📸 genera foto1.jpeg → foto10.jpeg */
+const photos = Array.from({length:10}, (_,i) =>
+  `images/foto${i+1}.jpeg`
+);
+
 const days = {
   "2025-12-24": {
     bg: "linear-gradient(135deg,#ffe29f,#ffa99f)",
     message: "En esta víspera, Tú eres todo lo que pienso y necesito",
-    emoji: "🎄✨",
-    photos: [
-      "images/foto1.jpeg",
-      "images/foto2.jpeg"
-    ]
+    emoji: "🎄✨"
   },
   "2025-12-25": {
     bg: "linear-gradient(135deg,#ffecd2,#fcb69f)",
     message: "Encontrarte, mi Yulicita, es mi mayor regalo.",
-    emoji: "🎁💖",
-    photos: [
-      "images/foto1.jpeg",
-      "images/foto2.jpeg"
-    ]
+    emoji: "🎁💖"
   }
 };
 
-let photoIndex = 0;
-let slideshowInterval;
+let index = 0;
+let showingFirst = true;
 
 function check() {
-  if (document.getElementById("pass").value !== PASSWORD) {
+  if (pass.value !== PASSWORD) {
     alert("Contraseña incorrecta");
     return;
   }
 
-  document.getElementById("login").style.display = "none";
-  document.getElementById("content").style.display = "block";
+  login.style.display = "none";
+  content.style.display = "block";
 
   const today = new Date().toISOString().slice(0,10);
   const data = days[today];
-
-  document.getElementById("date").innerText =
-    new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
-
   if (!data) return;
 
   document.body.style.background = data.bg;
-  document.getElementById("message").innerText = data.message;
-  document.getElementById("emoji").innerText = data.emoji;
+  emoji.innerText = data.emoji;
+  message.innerText = data.message;
+  date.innerText = new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
 
-  const img = document.getElementById("photo");
-  img.src = data.photos[0];
+  img1.src = photos[0];
+  img2.src = photos[1];
 
-  slideshowInterval = setInterval(() => {
-    photoIndex = (photoIndex + 1) % data.photos.length;
-    img.style.opacity = 0;
-    setTimeout(() => {
-      img.src = data.photos[photoIndex];
-      img.style.opacity = 1;
-    }, 500);
-  }, 4000);
+  setInterval(changePhoto, 5000);
+}
+
+function changePhoto() {
+  index = (index + 1) % photos.length;
+
+  const active = showingFirst ? img1 : img2;
+  const next = showingFirst ? img2 : img1;
+
+  next.src = photos[index];
+  next.classList.add("active");
+  active.classList.remove("active");
+
+  showingFirst = !showingFirst;
 }
 </script>
 
