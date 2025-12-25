@@ -75,7 +75,6 @@ body {
 /* 💕 Corazones laterales */
 .floating {
   position: absolute;
-  font-size: 22px;
   animation: floatUp 12s linear infinite;
   opacity: 0.5;
 }
@@ -105,7 +104,7 @@ button {
 
 <body>
 
-<!-- Corazones laterales -->
+<!-- 💖 Corazones decorativos -->
 <script>
 for (let i = 0; i < 16; i++) {
   const h = document.createElement("div");
@@ -128,7 +127,7 @@ for (let i = 0; i < 16; i++) {
 
 <!-- CONTENIDO -->
 <div class="card" id="content" style="display:none;">
-  <div class="heart" id="emoji">🎄</div>
+  <div class="heart" id="emoji">💗</div>
   <h3 id="date"></h3>
   <p id="message"></p>
 
@@ -140,29 +139,32 @@ for (let i = 0; i < 16; i++) {
 <script>
 const PASSWORD = "paraminegrita";
 
-/* 📸 Lista flexible: jpg y jpeg */
+/* 📸 Fotos foto1 → foto10 (jpg / jpeg) */
 const photos = [];
 for (let i = 1; i <= 10; i++) {
   photos.push(`images/foto${i}.jpg`);
   photos.push(`images/foto${i}.jpeg`);
 }
 
-const days = {
-  "2025-12-24": {
-    bg: "linear-gradient(135deg,#ffe29f,#ffa99f)",
-    message: "En esta víspera, Tú eres todo lo que pienso y necesito",
-    emoji: "🎄✨"
-  },
-  "2025-12-25": {
-    bg: "linear-gradient(135deg,#ffecd2,#fcb69f)",
-    message: "Encontrarte, mi Yulicita, es mi mayor regalo.",
-    emoji: "🎁💖"
-  }
-};
-
 let index = 0;
 
-function check() {
+/* 💌 Cargar frase desde frases.txt */
+async function loadPhrase() {
+  try {
+    const res = await fetch("frases.txt");
+    const text = await res.text();
+    const phrases = text
+      .split("\n")
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  } catch {
+    return "Mi amor por ti siempre encuentra la forma 🤍";
+  }
+}
+
+async function check() {
   if (pass.value !== PASSWORD) {
     alert("Contraseña incorrecta");
     return;
@@ -171,16 +173,22 @@ function check() {
   login.style.display = "none";
   content.style.display = "block";
 
-  const today = new Date().toISOString().slice(0,10);
-  const data = days[today];
-  if (!data) return;
+  document.body.style.background =
+    "linear-gradient(135deg,#ffe29f,#ffa99f)";
 
-  document.body.style.background = data.bg;
-  emoji.innerText = data.emoji;
-  message.innerText = data.message;
-  date.innerText = new Date().toLocaleDateString("es-ES", { dateStyle: "full" });
+  emoji.innerText = "💖";
 
+  date.innerText = new Date().toLocaleDateString(
+    "es-ES",
+    { dateStyle: "full" }
+  );
+
+  // 💌 Frase aleatoria
+  message.innerText = await loadPhrase();
+
+  // 📸 Primera foto
   photo.src = photos[index];
+
   setInterval(changePhoto, 5000);
 }
 
@@ -197,4 +205,3 @@ function changePhoto() {
 
 </body>
 </html>
-
